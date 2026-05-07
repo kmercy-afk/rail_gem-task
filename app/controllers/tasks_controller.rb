@@ -3,8 +3,16 @@ class TasksController < ApplicationController
 
   # GET /tasks
   def index
+  params[:q] ||= {}
+
+  # Remove blank values (important for multi-condition search)
+  params[:q].delete_if { |_, v| v.blank? }
+
   @q = Task.ransack(params[:q])
+
+  # Default sorting (required for assignment consistency)
   @q.sorts = "deadline asc" if @q.sorts.empty?
+
   @tasks = @q.result(distinct: true)
 end
 
