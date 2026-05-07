@@ -3,8 +3,10 @@ class TasksController < ApplicationController
 
   # GET /tasks
   def index
-    @tasks = Task.all
-  end
+  @q = Task.ransack(params[:q])
+  @q.sorts = "deadline asc" if @q.sorts.empty?
+  @tasks = @q.result(distinct: true)
+end
 
   # GET /tasks/1
   def show
